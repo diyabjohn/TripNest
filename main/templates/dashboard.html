@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-12 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <h2 class="text-4xl font-serif text-indigo-800 mb-8 text-center">Welcome, {{ user.username }}!</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div class="bg-white shadow-lg rounded-2xl p-8 transform hover:scale-105 transition duration-300 bg-gradient-to-br from-blue-100 to-indigo-100">
+            <h3 class="text-2xl font-serif text-indigo-800 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Your Preferences
+            </h3>
+            <p class="text-indigo-700">{{ user.preferences }}</p>
+        </div>
+
+        <div class="bg-white shadow-lg rounded-2xl p-8 transform hover:scale-105 transition duration-300 bg-gradient-to-br from-purple-100 to-pink-100">
+            <h3 class="text-2xl font-serif text-purple-800 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                Your Recent Bookings
+            </h3>
+            <ul class="space-y-3">
+                {% for booking in bookings %}
+                    <li class="text-purple-700 bg-white bg-opacity-50 rounded-lg p-3 shadow-sm">
+                        <span class="font-semibold text-purple-900">{{ booking.hotel.name }}</span>
+                        <br>
+                        <span class="text-sm">{{ booking.date|date:"F d, Y" }}</span>
+                    </li>
+                {% empty %}
+                    <li class="text-purple-600 italic">No recent bookings.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 gap-8 mb-12">
+        <div class="bg-white shadow-lg rounded-2xl p-8 transform hover:scale-105 transition duration-300 bg-gradient-to-br from-blue-100 to-indigo-100">
+            <h3 class="text-2xl font-serif text-indigo-800 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8.13401 2 5 5.13401 5 9C5 13.6944 12 21 12 21C12 21 19 13.6944 19 9C19 5.13401 15.866 2 12 2ZM12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9C14.5 10.3807 13.3807 11.5 12 11.5Z"/>
+                </svg>
+               <a href="{% url "hotel_map" %}">Hotel Locations</a> 
+            </h3>
+            <p class="text-indigo-700">{{ user.preferences }}</p>
+        </div>
+    <!-- Hotel Map Section -->
+
+
+    <div class="bg-white shadow-lg rounded-2xl p-8 bg-gradient-to-br from-green-100 to-teal-100">
+        <h3 class="text-2xl font-serif text-green-800 mb-6 flex items-center">
+            <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+            Recommended Hotels for You
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for recommendation in recommendations %}
+                <div class="bg-white bg-opacity-75 rounded-xl p-6 shadow-md transform hover:scale-105 transition duration-300">
+                    <h4 class="font-semibold text-green-800 text-lg mb-2">{{ recommendation.name }}</h4>
+                    <p class="text-green-700 text-sm mb-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        {{ recommendation.location }}
+                    </p>
+                    <p class="text-yellow-500 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        Rating: {{ recommendation.rating }}
+                    </p>
+                </div>
+            {% empty %}
+                <p class="text-green-700 italic col-span-3 text-center">No recommendations available at the moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

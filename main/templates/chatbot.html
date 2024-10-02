@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    TRIPNest - Your Luxury Getaway
+{% endblock %}
+
+{% block content %}
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&family=Montserrat:wght@700&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.8);
+            z-index: -1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            box-sizing: border-box;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            position: relative;
+            text-shadow: 
+                3px 3px 0px #ffd700,
+                -3px -3px 0px #9f81d5;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        h1::after {
+            content: 'TRIPNest';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            color: rgba(255, 255, 255, 0.3);
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ffd700, 0 0 20px #ffd700;
+            }
+            to {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ffd700, 0 0 40px #ffd700;
+            }
+        }
+
+        .home-button {
+            background-color: #ffd700;
+            color: #000;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-button:hover {
+            background-color: #fff;
+            color: #ffd700;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #chatbot-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        #chatbot-button {
+            width: 100px;
+            height: 100px;
+            border: none;
+            border-radius: 50%;
+            background-color: #ffd700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #chatbot-button::before {
+            content: '🤵';
+            font-size: 50px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        #chatbot-button:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #chatbot-button:hover::before {
+            transform: translate(-50%, -50%) rotate(-10deg);
+        }
+
+        #chatbot-widget {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        #chat-header {
+            background-color: #ffd700;
+            color: #000;
+            padding: 15px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #e5c100;
+        }
+
+        #chat-box {
+            height: 350px;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 20px;
+            max-width: 80%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background-color: #e6f2ff;
+            color: #000;
+            margin-left: auto;
+            border-bottom-right-radius: 0;
+        }
+
+        .bot-message {
+            background-color: #fff5cc;
+            color: #000;
+            border-bottom-left-radius: 0;
+        }
+
+        #user-input {
+            width: calc(100% - 70px);
+            padding: 12px;
+            border: 2px solid #ffd700;
+            border-radius: 25px;
+            margin: 10px;
+            font-size: 1rem;
+        }
+
+        #send-button {
+            background-color: #ffd700;
+            color: #000;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        #send-button:hover {
+            background-color: #9f81d5;
+            transform: scale(1.05);
+        }
+    </style>
+
+    <div class="background-container"></div>
+    <div class="content-wrapper">
+      
+        
+        <div id="chatbot-container">
+            <button id="chatbot-button" aria-label="Open chat"></button>
+
+            <div id="chatbot-widget">
+                <div id="chat-header">Your Personal Concierge</div>
+                <div id="chat-box"></div>
+                <div style="display: flex; padding: 10px; background-color: #fff;">
+                    <input type="text" id="user-input" placeholder="How may I assist you?">
+                    <button id="send-button" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('chatbot-button').addEventListener('click', function() {
+            const chatbotWidget = document.getElementById('chatbot-widget');
+            if (chatbotWidget.style.display === 'none' || chatbotWidget.style.display === '') {
+                chatbotWidget.style.display = 'block';
+                setTimeout(() => chatbotWidget.style.opacity = '1', 50);
+            } else {
+                chatbotWidget.style.opacity = '0';
+                setTimeout(() => chatbotWidget.style.display = 'none', 300);
+            }
+        });
+
+        function getCSRFToken() {
+            return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
+        }
+
+        function appendMessage(message, className) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + className;
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
+            if (message === '') return;
+
+            appendMessage(message, 'user-message');
+            userInput.value = '';
+
+            fetch('{% url "chatbot" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCSRFToken(),
+                },
+                body: new URLSearchParams({ 'message': message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                appendMessage(data.reply, 'bot-message');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+{% endblock %}

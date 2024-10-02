@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ hotel.name }} - Details{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12 bg-gradient-to-b from-blue-50 to-purple-50">
+    <div class="bg-white shadow-lg rounded-3xl overflow-hidden mb-12 transform hover:scale-105 transition duration-300">
+        {% if hotel.image %}
+            <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}" class="w-full h-80 object-cover">
+        {% else %}
+            <div class="w-full h-80 bg-gradient-to-r from-pink-300 to-purple-300 flex items-center justify-center">
+                <span class="text-white text-2xl font-semibold">No image available</span>
+            </div>
+        {% endif %}
+        <div class="p-8 bg-gradient-to-b from-white to-indigo-50">
+            <h2 class="text-4xl font-serif text-indigo-800 mb-6">{{ hotel.name }}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-4">
+                    <p class="text-indigo-600 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                        <span class="font-medium">Location:</span> {{ hotel.location }}
+                    </p>
+                    <p class="text-green-600 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path></svg>
+                        <span class="font-medium">Price:</span> ${{ hotel.price }}
+                    </p>
+                    <p class="text-yellow-500 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <span class="font-medium text-indigo-800">Rating:</span> {{ hotel.rating }}
+                    </p>
+                </div>
+                <div class="bg-indigo-100 p-4 rounded-xl">
+                    <h3 class="text-2xl font-serif text-indigo-800 mb-3">Amenities</h3>
+                    <p class="text-indigo-600">{{ hotel.amenities }}</p>
+                </div>
+            </div>
+            <div class="mt-8 bg-purple-100 p-6 rounded-xl">
+                <h3 class="text-2xl font-serif text-purple-800 mb-3">Reviews</h3>
+                <p class="text-purple-600">{{ hotel.reviews }}</p>
+            </div>
+            <div class="mt-8 text-center">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'book_hotel' hotel.id %}" class="inline-block bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-8 rounded-full text-lg font-semibold hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transform hover:scale-105 transition duration-300">
+                        Book Now
+                    </a>
+                {% else %}
+                    <p class="text-indigo-600 text-lg">Please <a href="{% url 'login' %}" class="text-purple-500 hover:underline font-semibold">login</a> to book this hotel.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Similar Hotels Section -->
+    <div class="bg-white shadow-lg rounded-3xl overflow-hidden">
+        <div class="p-8 bg-gradient-to-b from-white to-pink-50">
+            <h3 class="text-3xl font-serif text-pink-800 mb-6">Similar Hotels You Might Like</h3>
+            {% if similar_hotels %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for similar_hotel in similar_hotels %}
+                        <a href="{% url 'hotel_detail' similar_hotel.id %}" class="block bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl p-6 hover:shadow-xl transition duration-300 transform hover:scale-105">
+                            <h4 class="font-semibold text-indigo-800 text-xl mb-2">{{ similar_hotel.name }}</h4>
+                            <p class="text-indigo-600 text-sm mb-2">{{ similar_hotel.location }}</p>
+                            <p class="text-purple-600 text-sm mb-2">Amenities: {{ similar_hotel.amenities|truncatechars:50 }}</p>
+                            <p class="text-pink-600 font-semibold text-lg">Price: ${{ similar_hotel.price }}</p>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-indigo-600 text-lg">No similar hotels found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
